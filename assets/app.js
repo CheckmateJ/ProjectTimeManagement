@@ -6,7 +6,15 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
+// start the Stimulus application
+import Vue from "vue";
+import Timer from './Timer';
 import './styles/app.css';
 
-// start the Stimulus application
-import './bootstrap';
+
+
+
+new Vue({
+    el: '#app',
+    render: h => h(Timer)
+});
