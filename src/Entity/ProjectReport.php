@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ProjectReportRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=ProjectReportRepository::class)
@@ -24,6 +25,7 @@ class ProjectReport
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Gedmo\Timestampable(on="create")
      */
     private $createdAt;
 
