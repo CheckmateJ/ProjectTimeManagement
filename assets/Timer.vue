@@ -3,23 +3,25 @@
     <div class="d-inline-flex  justify-content-center timer-box">
       <div class="me-3"><input class="input-group-text form-control project-name-input " name="project name"
                                placeholder="project name"></div>
-      <div class="time-hours" ref="hours">00:</div>
-      <div class="time-minutes" ref="minutes">00:</div>
-      <div class="time-seconds me-2" ref="seconds">00</div>
-      <div class="d-inline-flex mb-2">
-        <div>
-          <button class="btn btn-dark me-2" @click="startTime">Start</button>
+      <form method="post" class="d-inline-flex">
+        <div class="time-hours" ref="hours">00:</div>
+        <div class="time-minutes" ref="minutes">00:</div>
+        <div class="time-seconds me-2" ref="seconds">00</div>
+        <div class="d-inline-flex mb-2">
+          <div>
+            <button class="btn btn-dark me-2" @click="startTime">Start</button>
+          </div>
+          <div>
+            <button class="btn btn-dark me-2" @click="pauseTime">Pause</button>
+          </div>
+          <div>
+            <button class="btn btn-dark me-2" @click="stopTime" type="submit">Stop</button>
+          </div>
+          <div>
+            <button class="btn btn-dark me-2" @click="resetTime">Reset</button>
+          </div>
         </div>
-        <div>
-          <button class="btn btn-dark me-2" @click="pauseTime">Pause</button>
-        </div>
-        <div>
-          <button class="btn btn-dark me-2" @click="stopTime">Stop</button>
-        </div>
-        <div>
-          <button class="btn btn-dark me-2" @click="resetTime">Reset</button>
-        </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>
