@@ -4,5 +4,17 @@
 
 {% block body %}
     <div id="app"></div>
-{{ form(form) }}
+    <div class="display-container">
+        {% for project in projects %}
+            <div class="card me-3 mt-3" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted"></h6>
+                    <p class="card-text">{{ project.timeOfProject | join(':') }}</p>
+                    {# <a href="#" class="card-link">Card link</a> #}
+                    {# <a href="#" class="card-link">Another link</a> #}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

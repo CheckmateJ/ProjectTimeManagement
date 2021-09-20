@@ -42,6 +42,7 @@ class ProjecTimeType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ProjectReport::class,
+            'csrf_protection' => false
         ]);
     }
 }
