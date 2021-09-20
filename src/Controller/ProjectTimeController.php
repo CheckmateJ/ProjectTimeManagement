@@ -26,8 +26,8 @@ class ProjectTimeController extends AbstractController
     {
         $projects = $this->entityManager->getRepository(ProjectReport::class)->find(1);
 
-        /** @var ProjectReport $projects */
-        die(dump(implode( ', ',$projects->getTimeOfProject())));
+//        /** @var ProjectReport $projects */
+//        die(dump(implode( ', ',$projects->getTimeOfProject())));
         return $this->render('project_time/index.html.twig');
     }
 
@@ -47,9 +47,9 @@ class ProjectTimeController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $project->setUser($this->getUser());
+            $project->setTimeOfProject([$request->get('projec_time')['timeOfProject']]);
             $this->entityManager->persist($project);
             $this->entityManager->flush();
-
         }
 
         return $this->render('project_time/form.html.twig', [
