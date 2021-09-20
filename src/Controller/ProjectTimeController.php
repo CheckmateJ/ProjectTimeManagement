@@ -43,6 +43,9 @@ class ProjectTimeController extends AbstractController
             $project = new ProjectReport();
         }
 
+        $projects = $this->entityManager->getRepository(ProjectReport::class)->findAll();
+
+
         $form = $this->createForm(ProjecTimeType::class, $project);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
@@ -53,7 +56,8 @@ class ProjectTimeController extends AbstractController
         }
 
         return $this->render('project_time/form.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'projects' => $projects
         ]);
     }
 

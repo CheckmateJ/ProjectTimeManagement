@@ -2,13 +2,14 @@
   <div class="container">
     <div class="d-inline-flex  justify-content-center timer-box">
       <form name="projec_time" method="post" class="d-inline-flex">
-      <div class="me-3"><input id="projec_time_name" name="projec_time[name]" required="required" class="input-group-text form-control project-name-input "
-                               placeholder="project name"></div>
+        <div class="me-3"><input id="projec_time_name" name="projec_time[name]" required="required"
+                                 class="input-group-text form-control project-name-input "
+                                 placeholder="project name"></div>
         <div class="time-hours" ref="hours">00:</div>
         <div class="time-minutes" ref="minutes">00:</div>
-        <div class="time-seconds me-2"  ref="seconds">00</div>
+        <div class="time-seconds me-2" ref="seconds">00</div>
         <div class="d-inline-flex mb-2">
-          <input style="display: none" name="projec_time[timeOfProject]" ref="time-of-project"  required="required">
+          <input style="display: none" name="projec_time[timeOfProject]" ref="time-of-project" required="required">
           <div>
             <a class="btn btn-dark me-2" @click="startTime">Start</a>
           </div>
@@ -61,10 +62,10 @@ export default {
       clearInterval(this.timer);
     },
     stopTime: function () {
-      this.hours = this.hours >=1 && this.hours < 10 ? '0' + this.hours + ':' : this.hours + ':';
-      this.minutes = this.minutes >=1 && this.minutes < 10 ? '0' + this.minutes + ':' : this.minutes + ':';
-      this.seconds = this.seconds >=1 && this.seconds < 10 ? '0' + this.seconds : this.seconds;
-      this.time = this.hours  + this.minutes  + this.seconds
+      this.hours = this.hours >= 1 && this.hours < 10 ? '0' + this.hours + ':' : this.hours + ':';
+      this.minutes = this.minutes >= 1 && this.minutes < 10 ? '0' + this.minutes + ':' : this.minutes + ':';
+      this.seconds = this.seconds >= 1 && this.seconds < 10 ? '0' + this.seconds : this.seconds;
+      this.time = this.hours + this.minutes + this.seconds
       this.$refs["time-of-project"].value = this.time
       clearInterval(this.timer);
       this.resetTime()
