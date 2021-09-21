@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\ProjectReport;
-use App\Form\ProjecTimeType;
+use App\Entity\Project;
+use App\Entity\ProjectTime;
+use App\Form\ProjectTimeType;
+use App\Form\ProjectType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +26,7 @@ class ProjectTimeController extends AbstractController
      */
     public function index(): Response
     {
-        $projects = $this->entityManager->getRepository(ProjectReport::class)->find(1);
+        $projects = $this->entityManager->getRepository(ProjectTime::class)->find(1);
 
 //        /** @var ProjectReport $projects */
 //        die(dump(implode( ', ',$projects->getTimeOfProject())));
@@ -37,23 +39,25 @@ class ProjectTimeController extends AbstractController
      */
     public function edit($id = null, Request $request): Response
     {
-        if($id !=null){
-            $project = $this->entityManager->getRepository(ProjectReport::class)->find($id);
-        }else{
-            $project = new ProjectReport();
+        if ($id != null) {
+            $project = $this->entityManager->getRepository(Project::class)->find($id);
+        } else {
+            $project = new Project();
         }
 
-        $projects = $this->entityManager->getRepository(ProjectReport::class)->findAll();
+        $projects = $this->entityManager->getRepository(Project::class)->findAll();
 
 
-        $form = $this->createForm(ProjecTimeType::class, $project);
+        $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $project->setUser($this->getUser());
-            $project->setTimeOfProject([$request->get('projec_time')['timeOfProject']]);
-            $this->entityManager->persist($project);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($id == null) {
+                $project->setUser($this->getUser());
+                $this->entityManager->persist($project);
+            }
             $this->entityManager->flush();
         }
+
 
         return $this->render('project_time/form.html.twig', [
             'form' => $form->createView(),
