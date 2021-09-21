@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\ProjectReport;
+use App\Entity\ProjectTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\ArrayType;
 use Doctrine\DBAL\Types\TextType;
@@ -16,19 +16,19 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProjecTimeType extends AbstractType
+class ProjectTimeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
-            ->add('timeOfProject', \Symfony\Component\Form\Extension\Core\Type\TextType::class)
-            ->add('save', SubmitType::class );
+            ->add('timeOfProject', \Symfony\Component\Form\Extension\Core\Type\TextType::class);
         $builder->get('timeOfProject')
             ->addModelTransformer(new CallbackTransformer(
                 function ($timeOfProjectAsArray) {
                     // transform the array to a string
-                    return implode(', ', $timeOfProjectAsArray);
+                    if($timeOfProjectAsArray !==null){
+                        return implode(', ', $timeOfProjectAsArray);
+                    }
                 },
                 function ($timeOfProjectAsArray) {
                     // transform the string back to an array
@@ -41,7 +41,7 @@ class ProjecTimeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => ProjectReport::class,
+            'data_class' => ProjectTime::class,
             'csrf_protection' => false
         ]);
     }
