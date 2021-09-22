@@ -12,9 +12,14 @@ import Timer from './Timer';
 import './styles/app.css';
 
 
-
-
 new Vue({
     el: '#app',
-    render: h => h(Timer)
+    render(h) {
+        return h(Timer, {
+            props: {
+                projects: JSON.parse(this.$el.attributes['data-projects'].value),
+                projectsTime: JSON.parse(this.$el.attributes['data-projects-time'].value)
+            }
+        })
+    }
 });
