@@ -2,7 +2,7 @@
   <div class="container">
     <div class="d-inline-flex  justify-content-center timer-box">
       <form name="project_time" method="post" class="d-inline-flex">
-        <div class="me-3"><input id="project_name" name="project[name]" required="required"
+        <div class="me-3"><input v-on:keyup.enter="startTime" id="project_name" name="project[name]" required="required"
                                  class="input-group-text form-control project-name-input "
                                  placeholder="project name"></div>
         <div class="time-hours" ref="hours">00:</div>
@@ -18,7 +18,9 @@
             <a class="btn btn-dark me-2" type="submit" ref="pause-button" @click="pauseTime">Pause</a>
           </div>
           <div>
-            <button class="btn btn-dark me-2" name="project_time[save]" ref="stop-button" @click="stopTime" type="submit">Stop</button>
+            <button class="btn btn-dark me-2" name="project_time[save]" ref="stop-button" @click="stopTime"
+                    type="submit">Stop
+            </button>
           </div>
           <div>
             <a class="btn btn-dark me-2" @click="resetTime" ref="reset-button">Reset</a>
@@ -26,23 +28,47 @@
         </div>
       </form>
     </div>
+    <div class="list-group" ref="list-group">
+      <div ref="time-project"></div>
+    </div>
   </div>
 </template>
 <script>
 export default {
+  props: ['projects', 'projectsTime'],
   data() {
     return {
       hours: '00',
       minutes: '00',
       seconds: '0',
       timer: null,
-      time: ''
+      time: '',
+      projectsData: [],
+      projectDate: '',
+      todayDate: '',
     }
   },
   mounted() {
     this.$refs["pause-button"].style.display = 'none';
     this.$refs["stop-button"].style.display = 'none';
     this.$refs["reset-button"].style.display = 'none';
+    var dateObj = new Date();
+    var month = dateObj.getUTCMonth() + 1 < 10 ? '0' + (dateObj.getUTCMonth() + 1) : dateObj.getUTCMonth() + 1; //months from 1-12
+    var day = dateObj.getUTCDate();
+    var year = dateObj.getUTCFullYear();
+    this.todayDate = year + "-" + month + "-" + day;
+
+    for (var project in this.projectsTime) {
+      let lastCharInDate = this.projectsTime[project].createdAt.indexOf('T');
+      let projectDate = this.projectsTime[project].createdAt.slice(0, lastCharInDate);
+      if (this.projectsData[this.projectsTime[project].projectName.name] !== projectDate || !this.projectsData[this.projectsTime[project].projectName.name]) {
+        this.projectsData[this.projectsTime[project].projectName.name] = projectDate
+        let button = document.createElement('button');
+        button.className = 'list-group-item list-group-item-action'
+        button.innerHTML = this.projectsTime[project].createdAt + this.projectsTime[project].projectName.name;
+        this.$refs['list-group'].appendChild(button);
+      }
+    }
   },
   methods: {
     startTime: function () {

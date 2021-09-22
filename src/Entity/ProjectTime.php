@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProjectReportRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ProjectReportRepository::class)
@@ -21,18 +22,21 @@ class ProjectTime
     /**
      * @ORM\Column(type="datetime_immutable")
      * @Gedmo\Timestampable(on="create")
+     * @Groups({"show_project"})
      */
     private $createdAt;
 
 
     /**
      * @ORM\Column(type="array")
+     * @Groups({"show_project"})
      */
     private $timeOfProject = [];
 
     /**
      * @ORM\ManyToOne(targetEntity=Project::class, inversedBy="projectReports", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"show_project"})
      */
     private $projectName;
 

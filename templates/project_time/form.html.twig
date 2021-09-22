@@ -3,66 +3,7 @@
 {% block title %}Hello ProjectTimeController!{% endblock %}
 
 {% block body %}
-    <div id="app"></div>
-{#    <div class="display-container">#}
-{#        {{ form_start(form) }}#}
-{#        <ul class="projectReports" data-prototype="{{ form_widget(form.projectReports.vars.prototype)| e('html_attr') }}">#}
-{#        </ul>#}
-{#        <button type="button" class="add_item_link" data-collection-holder-class="projectReports">Add a tag</button>#}
-{#        {{ form_row(form.projectReports) }}#}
+    <div id="app" data-projects="{{ projects }}" data-projects-time="{{ projectsTime }}"></div>
 
-{#        {{ form_end(form) }}#}
-
-        {# {{ form.row(form.name) }} #}
-        {# {{ form.row(form.projectReports) }} #}
-        {# {% for project in projects %} #}
-        {# {{ dump(project) }} #}
-        {# {% if project.name is defined %} #}
-        {# {{ dump('yes') }} #}
-        {# {% else %} #}
-        {# <div class="card me-3 mt-3" style="width: 18rem;"> #}
-        {# <div class="card-body"> #}
-        {# <h5 class="card-title">{{ project.name }}</h5> #}
-        {# <h6 class="card-subtitle mb-2 text-muted"></h6> #}
-        {# <p class="card-text">{{ project.timeOfProject | join(':') }}</p> #}
-        {# #}{# <a href="#" class="card-link">Card link</a> #}
-        {# #}{# <a href="#" class="card-link">Another link</a> #}
-        {# </div> #}
-        {# </div> #}
-        {# {% endif %} #}
-        {# <div class="card me-3 mt-3" style="width: 18rem;"> #}
-        {# <div class="card-body"> #}
-        {# <h5 class="card-title">{{ project.name }}</h5> #}
-        {# <h6 class="card-subtitle mb-2 text-muted"></h6> #}
-        {# <p class="card-text">{{ project.timeOfProject | join(':') }}</p> #}
-        {# #}{# <a href="#" class="card-link">Card link</a> #}
-        {# #}{# <a href="#" class="card-link">Another link</a> #}
-        {# </div> #}
-        {# </div> #}
-        {# {% endfor %} #}
-{#    </div>#}
-{#    <script>#}
-
-{#        const addFormToCollection = (e) => {#}
-{#            const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);#}
-
-{#            const item = document.createElement('li');#}
-
-
-{#            item.innerHTML = collectionHolder#}
-{#                .dataset#}
-{#                .prototype#}
-{#                .replace(#}
-{#                    /__name__/g,#}
-{#                    collectionHolder.dataset.index#}
-{#                );#}
-{#            collectionHolder.appendChild(item);#}
-
-{#            collectionHolder.dataset.index++;#}
-{#        };#}
-{#        document#}
-{#            .querySelectorAll('.add_item_link')#}
-{#            .forEach(btn => btn.addEventListener("click", addFormToCollection));#}
-{#    </script>#}
 {% endblock %}
 
