@@ -8,11 +8,11 @@
         <div class="time-hours" ref="hours">00:</div>
         <div class="time-minutes" ref="minutes">00:</div>
         <div class="time-seconds me-2" ref="seconds">00</div>
-        <div class="d-inline-flex mb-2">
+        <div class="d-inline-flex mb-2 btn-functions">
           <input style="display: none" name="project[projectReports][1][timeOfProject]" ref="time-of-project"
                  required="required">
           <div>
-            <a class="btn btn-dark me-2" @click="startTime" ref="start-button">Start</a>
+            <a class="btn  me-2 btn-start" @click="startTime" ref="start-button">Start</a>
           </div>
           <div>
             <a class="btn btn-dark me-2" type="submit" ref="pause-button" @click="pauseTime">Pause</a>
@@ -35,7 +35,7 @@
 </template>
 <script>
 export default {
-  props: ['projects', 'projectsTime'],
+  props: ['projectsTime'],
   data() {
     return {
       hours: '00',
@@ -52,23 +52,8 @@ export default {
     this.$refs["pause-button"].style.display = 'none';
     this.$refs["stop-button"].style.display = 'none';
     this.$refs["reset-button"].style.display = 'none';
-    var dateObj = new Date();
-    var month = dateObj.getUTCMonth() + 1 < 10 ? '0' + (dateObj.getUTCMonth() + 1) : dateObj.getUTCMonth() + 1; //months from 1-12
-    var day = dateObj.getUTCDate();
-    var year = dateObj.getUTCFullYear();
-    this.todayDate = year + "-" + month + "-" + day;
+    this.projectsDisplay();
 
-    for (var project in this.projectsTime) {
-      let lastCharInDate = this.projectsTime[project].createdAt.indexOf('T');
-      let projectDate = this.projectsTime[project].createdAt.slice(0, lastCharInDate);
-      if (this.projectsData[this.projectsTime[project].projectName.name] !== projectDate || !this.projectsData[this.projectsTime[project].projectName.name]) {
-        this.projectsData[this.projectsTime[project].projectName.name] = projectDate
-        let button = document.createElement('button');
-        button.className = 'list-group-item list-group-item-action'
-        button.innerHTML = this.projectsTime[project].createdAt + this.projectsTime[project].projectName.name;
-        this.$refs['list-group'].appendChild(button);
-      }
-    }
   },
   methods: {
     startTime: function () {
@@ -119,6 +104,49 @@ export default {
       this.$refs.minutes.innerHTML = '00:';
       this.$refs.hours.innerHTML = '00:';
     },
+    projectsDisplay: function () {
+      // create date as Year-Month-Day
+      var dateObj = new Date();
+      var month = dateObj.getUTCMonth() + 1 < 10 ? '0' + (dateObj.getUTCMonth() + 1) : dateObj.getUTCMonth() + 1; //months from 1-12
+      var day = dateObj.getUTCDate();
+      var year = dateObj.getUTCFullYear();
+      this.todayDate = year + "-" + month + "-" + day;
+      var counts = {};
+
+      //count the same project
+      this.projectsTime.forEach(x => {
+        counts[x.projectName.name] = (counts[x.projectName.name] || 0) + 1;
+      });
+
+      for (let i = this.projectsTime.length - 1; i >= 0; i--) {
+        let lastCharInDate = this.projectsTime[i].createdAt.indexOf('T');
+        let projectDate = this.projectsTime[i].createdAt.slice(0, lastCharInDate);
+
+        if (this.projectsData[this.projectsTime[i].projectName.name] !== projectDate || !this.projectsData[this.projectsTime[i].projectName.name]) {
+          this.projectsData[this.projectsTime[i].projectName.name] = projectDate
+          let divList = document.createElement('div');
+          let aToggle = document.createElement('a');
+          let div = document.createElement('div');
+          let divChild = document.createElement('div');
+          let p = document.createElement('p');
+
+          divList.className = 'list-group-item list-group-item-action'
+          div.className = 'project-display';
+          divChild.className = 'd-inline-flex project-content-box'
+          p.className = 'date-display';
+          p.innerHTML = projectDate === this.todayDate ? 'Today' : projectDate;
+
+          divList.innerHTML = this.projectsTime[i].projectName.name;
+          aToggle.innerHTML = counts[this.projectsTime[i].projectName.name];
+          this.$refs['list-group'].appendChild(div);
+          div.appendChild(p)
+          div.appendChild(divChild)
+          divChild.appendChild(divList)
+          divList.appendChild(aToggle)
+
+        }
+      }
+    }
   }
 }
 </script>

@@ -1,10 +1,8 @@
 <?php
 
 namespace App\Controller;
-
 use App\Entity\Project;
 use App\Entity\ProjectTime;
-use App\Form\ProjectTimeType;
 use App\Form\ProjectType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,10 +25,6 @@ class ProjectTimeController extends AbstractController
      */
     public function index(): Response
     {
-        $projects = $this->entityManager->getRepository(ProjectTime::class)->find(1);
-
-//        /** @var ProjectReport $projects */
-//        die(dump(implode( ', ',$projects->getTimeOfProject())));
         return $this->render('project_time/index.html.twig');
     }
 
@@ -46,10 +40,7 @@ class ProjectTimeController extends AbstractController
             $project = new Project();
         }
 
-        $projects = $this->entityManager->getRepository(Project::class)->findAll();
         $projectsTime = $this->entityManager->getRepository(ProjectTime::class)->findAll();
-
-        $projectsJson = $serializer->serialize($projects, 'json', ['groups' => 'show_project']);
         $projectsTimeJson = $serializer->serialize($projectsTime, 'json', ['groups' => 'show_project']);
 
         $form = $this->createForm(ProjectType::class, $project);
@@ -62,10 +53,8 @@ class ProjectTimeController extends AbstractController
             $this->entityManager->flush();
         }
 
-
         return $this->render('project_time/form.html.twig', [
             'form' => $form->createView(),
-            'projects' => $projectsJson,
             'projectsTime' => $projectsTimeJson
         ]);
     }

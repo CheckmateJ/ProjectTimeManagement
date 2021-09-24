@@ -8,6 +8,29 @@
 .card {
   border: none;
   border-radius: 10px;
-  background-color: #ececec;
+  background-color: #e9ecef;
 }
 
+.date-display {
+  width: 100%;
+  color: gray;
+  background-color: #e9ecef;
+  margin-bottom: 0;
+}
+
+.project-display {
+  margin-bottom: 20px;
+}
+
+.btn-functions .btn {
+  background-color: #e9ecef;
+  color: black;
+}
+
+.project-content-box {
+  width: 100%;
+}
+.list-group-item-action a{
+    align-self: center;
+    margin-left: 15px;
+}
