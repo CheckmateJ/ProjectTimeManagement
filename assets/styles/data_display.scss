@@ -15,6 +15,7 @@
   width: 100%;
   color: gray;
   background-color: #e9ecef;
+  padding-left: 20px;
   margin-bottom: 0;
 }
 
@@ -30,7 +31,19 @@
 .project-content-box {
   width: 100%;
 }
-.list-group-item-action a{
-    align-self: center;
-    margin-left: 15px;
+
+.list-group-item-action a {
+  align-self: center;
+  margin-left: 15px;
+
+}
+
+.toggle-button{
+  background: none;
+  border: none;
+}
+.toggle-button svg {
+  position: absolute;
+  right: 20px;
+  bottom: 10px;
 }
