@@ -138,30 +138,63 @@ export default {
           let divChild = document.createElement('div');
           let p = document.createElement('p');
           let projectsTime = this.projectsTime;
+          let text = document.createElement('text');
           divList.className = 'list-group-item list-group-item-action'
-          div.className = 'project-display';
+          div.className = `project-display`;
           divChild.className = 'd-inline-flex project-content-box'
           p.className = 'date-display';
+          text.className = 'time-display'
           toggleButton.className = 'toggle-button'
-          toggleButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-nested" viewBox="0 0 16 16">\n' +
+          toggleButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" fill="currentColor" class="bi bi-list-nested" viewBox="0 0 16 20">\n' +
               '              <path fill-rule="evenodd" d="M4.5 11.5A.5.5 0 0 1 5 11h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 1 3h10a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5z"/>\n' +
               '            </svg>'
 
           p.innerHTML = projectDate === this.todayDate ? 'Today' : projectDate;
 
-          divList.innerHTML = this.projectsTime[i].projectName.name;
+          let seconds = 0;
+          let minutes = 0;
+          let hours = 0;
+
+          let projects = projectsTime.filter(name => name.projectName.name === projectsTime[i].projectName.name && name.createdAt.includes(projectDate));
+          for (var project in projects) {
+            let time = projects[project].timeOfProject[0].split(':')
+            seconds += parseInt(time[2])
+            minutes += parseInt(time[1])
+            hours += parseInt(time[0])
+            if(seconds > 59){
+              minutes ++;
+              seconds = seconds - 59
+            }
+            if(minutes > 59){
+              hours++
+              minutes = minutes - 59
+            }
+          }
+
+          seconds = seconds < 10 ? '0' + seconds : seconds;
+          minutes = minutes < 10 ? '0' + minutes: minutes;
+          hours = hours < 10 ? '0' + hours: hours;
+
+          divList.innerHTML = this.projectsTime[i].projectName.name  ;
           a.innerHTML = counts[this.projectsTime[i].projectName.name + ' ' + projectDate];
+          text.innerHTML = hours + ':' + minutes + ':'  + seconds;
           this.$refs['list-group'].appendChild(div);
           div.appendChild(p)
           div.appendChild(divChild)
           divChild.appendChild(divList)
           divList.appendChild(a)
           divList.appendChild(toggleButton)
+          divList.appendChild(text)
+
 
           toggleButton.addEventListener('click', function () {
-            let project = projectsTime.filter(name => name.projectName.name === projectsTime[i].projectName.name && name.createdAt.includes(projectDate));
-            let div = document.createElement('div');
-            document.querySelector('.list-group').appendChild(div);
+            for (var project in projects) {
+              let element = document.createElement('div');
+              element.className = 'list-group-item list-group-item-action'
+              element.innerHTML = projects[project].projectName.name + ' ' + projects[project].timeOfProject[0]
+              div.appendChild(element)
+              console.log(projects[project].timeOfProject[0])
+            }
           });
         }
       }

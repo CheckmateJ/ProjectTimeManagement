@@ -41,9 +41,11 @@
 .toggle-button{
   background: none;
   border: none;
+  float:right;
+  svg{
+    margin-bottom: 10px;
+  }
 }
-.toggle-button svg {
-  position: absolute;
-  right: 20px;
-  bottom: 10px;
+.time-display{
+  float: right;
 }
