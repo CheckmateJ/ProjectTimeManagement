@@ -59,4 +59,13 @@ class ProjectTimeController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/app/project/delete", name="project_time_delete", methods={"POST"})
+     */
+    public function delete(): Response
+    {
+            dd('here');
+//        $request->get('delete-project');
+    }
+
 }
