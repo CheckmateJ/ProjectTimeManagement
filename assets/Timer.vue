@@ -139,6 +139,7 @@ export default {
           let p = document.createElement('p');
           let projectsTime = this.projectsTime;
           let text = document.createElement('text');
+          let show = false;
           divList.className = 'list-group-item list-group-item-action'
           div.className = `project-display`;
           divChild.className = 'd-inline-flex project-content-box'
@@ -161,23 +162,23 @@ export default {
             seconds += parseInt(time[2])
             minutes += parseInt(time[1])
             hours += parseInt(time[0])
-            if(seconds > 59){
-              minutes ++;
+            if (seconds > 59) {
+              minutes++;
               seconds = seconds - 59
             }
-            if(minutes > 59){
+            if (minutes > 59) {
               hours++
               minutes = minutes - 59
             }
           }
 
           seconds = seconds < 10 ? '0' + seconds : seconds;
-          minutes = minutes < 10 ? '0' + minutes: minutes;
-          hours = hours < 10 ? '0' + hours: hours;
+          minutes = minutes < 10 ? '0' + minutes : minutes;
+          hours = hours < 10 ? '0' + hours : hours;
 
-          divList.innerHTML = this.projectsTime[i].projectName.name  ;
+          divList.innerHTML = this.projectsTime[i].projectName.name;
           a.innerHTML = counts[this.projectsTime[i].projectName.name + ' ' + projectDate];
-          text.innerHTML = hours + ':' + minutes + ':'  + seconds;
+          text.innerHTML = hours + ':' + minutes + ':' + seconds;
           this.$refs['list-group'].appendChild(div);
           div.appendChild(p)
           div.appendChild(divChild)
@@ -188,12 +189,19 @@ export default {
 
 
           toggleButton.addEventListener('click', function () {
-            for (var project in projects) {
-              let element = document.createElement('div');
-              element.className = 'list-group-item list-group-item-action'
-              element.innerHTML = projects[project].projectName.name + ' ' + projects[project].timeOfProject[0]
-              div.appendChild(element)
-              console.log(projects[project].timeOfProject[0])
+            if (show === false) {
+              for (var project in projects) {
+                let element = document.createElement('div');
+                element.className = 'list-group-item list-group-item-action child-data-project'
+                element.innerHTML = projects[project].projectName.name + ' ' + projects[project].timeOfProject[0]
+                div.appendChild(element)
+                show = true
+              }
+            } else {
+              document.querySelectorAll('.child-data-project').forEach(project => {
+                project.remove();
+                show = false
+              })
             }
           });
         }
