@@ -16,6 +16,7 @@ class ProjectTime
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"show_project"})
      */
     private $id;
 
