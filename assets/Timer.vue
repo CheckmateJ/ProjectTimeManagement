@@ -29,13 +29,13 @@
       </form>
     </div>
     <div class="list-group" ref="list-group" v-for="(projects,key) in projectsData">
-      <div class="project-display" v-for="(date,project) in projects">
-        <p class="date-display">{{ date }}{{ key }}</p>
+      <div class="project-display">
+        <p class="date-display">{{ projects.date }}</p>
         <div class="d-inline-flex project-content-box">
           <div class="list-group-item list-group-item-action">
-            {{ project }}
-            <a>{{ counts[project + ' ' + date] }}</a>
-            <button class="toggle-button" ref="toggle-button" @click="showChildProjects(project,date)">
+            <a v-bind:class="'numbers-of-doing-project-' + projects.id">{{ counts[projects.name + ' ' + projects.date] }}</a>
+            <span v-bind:class="'project-name-' + projects.name" @click="editName(projects.name, projects.id)">{{ projects.name }}</span>
+            <button class="toggle-button" ref="toggle-button" @click="showChildProjects(projects.name,projects.date)">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" fill="currentColor"
                    class="bi bi-list-nested" viewBox="0 0 16 20">
                 <path fill-rule="evenodd"
@@ -45,12 +45,10 @@
             <div class="time-display">
               <p>{{ projectHours[key] }}:{{ projectMinutes[key] }}:{{ projectSeconds[key] }}</p>
             </div>
-            <form method="post">
-              <button class="btn btn-danger btn-sm delete-button">Delete</button>
-            </form>
+            <button class="btn btn-danger btn-sm delete-button" @click="deleteProject(projects.id)">Delete</button>
           </div>
         </div>
-        <div v-bind:class="'list-group-item list-group-item-action child-data-project-' + project"
+        <div v-bind:class="'list-group-item list-group-item-action child-data-project-' + projects.name"
              ref="child-data-project">
         </div>
       </div>
@@ -97,11 +95,11 @@ export default {
     for (let i = this.projectsTime.length - 1; i >= 0; i--) {
       let lastCharInDate = this.projectsTime[i].createdAt.indexOf('T');
       let projectDate = this.projectsTime[i].createdAt.slice(0, lastCharInDate);
-      this.todayDate = new Date().getUTCFullYear() + '-' + (new Date().getUTCMonth() + 1 < 10 ? '0' + (new Date().getUTCMonth() + 1) : new Date().getUTCMonth() + 1) + '-' + new Date().getUTCDate();
 
-      if (typeof this.projectsData[j] == 'undefined' || this.projectsData[j][this.projectsTime[i].projectName.name] !== projectDate || !this.projectsData[j][this.projectsTime[i].projectName.name]) {
+      this.todayDate = new Date().getUTCFullYear() + '-' + (new Date().getUTCMonth() + 1 < 10 ? '0' + (new Date().getUTCMonth() + 1) : new Date().getUTCMonth() + 1) + '-' + new Date().getUTCDate();
+      if (typeof this.projectsData[j] == 'undefined' || this.projectsData[j].date !== projectDate || this.projectsData[j].name !== this.projectsTime[i].projectName.name) {
         let name = this.projectsTime[i].projectName.name
-        this.projectsData.push({[name]: projectDate})
+        this.projectsData.push({name: name, date: projectDate, id: this.projectsTime[i].id})
         j++
 
         let projectsTime = this.projectsTime;
@@ -142,13 +140,10 @@ export default {
 
       if (this.timer == null) {
         this.timer = setInterval(() => {
-          this.seconds++;
-          this.seconds = this.seconds < 10 ? '0' + this.seconds : this.seconds;
-          seconds.innerHTML = this.seconds;
           if (this.seconds === 60) {
+            this.seconds = '0';
             this.minutes++
             this.minutes = this.minutes < 10 ? '0' + this.minutes : this.minutes;
-            this.seconds = '00';
             minutes.innerHTML = this.minutes + ":";
           } else if (this.minutes === 60) {
             this.minutes = '00';
@@ -157,6 +152,10 @@ export default {
             hours.innerHTML = this.hours + ":"
           }
           this.time = this.hours + ":" + this.minutes + ":" + this.seconds;
+          this.seconds = this.seconds < 10 ? '0' + this.seconds : this.seconds;
+          seconds.innerHTML = this.seconds;
+          this.seconds++;
+
         }, 1000)
       }
     },
@@ -196,8 +195,20 @@ export default {
         })
       }
     },
-    delete: function () {
-      axios.post('/app/project/delete')
+    deleteProject: function (id) {
+      axios.post('/app/project/delete', {projectId: id})
+      window.location.reload();
+    },
+    editName: function (projectName, id) {
+      console.log(event.target.)
+      let firstPartName = projectName.split(' ');
+      let name = document.querySelector('.project-name-' + firstPartName[0])
+      let input = document.createElement('input');
+      input.id = 'project-name-editable';
+      input.value = name.innerHTML;
+      name.remove();
+      document.querySelector('.numbers-of-doing-project-' + id).appendChild(input);
+      // input.select();
     }
   }
 }

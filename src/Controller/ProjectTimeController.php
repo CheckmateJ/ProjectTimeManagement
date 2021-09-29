@@ -62,10 +62,13 @@ class ProjectTimeController extends AbstractController
     /**
      * @Route("/app/project/delete", name="project_time_delete", methods={"POST"})
      */
-    public function delete(): Response
+    public function delete(Request $request): Response
     {
-            dd('here');
-//        $request->get('delete-project');
+        $content = json_decode($request->getContent());
+        $projectTime =  $this->entityManager->getRepository(ProjectTime::class)->find($content->projectId);
+
+        $this->entityManager->remove($projectTime);
+        $this->entityManager->flush();
     }
 
 }
