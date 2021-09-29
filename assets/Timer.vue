@@ -29,12 +29,12 @@
       </form>
     </div>
     <div class="list-group" ref="list-group" v-for="(projects,key) in projectsData">
-      <div class="project-display" >
+      <div class="project-display">
         <p class="date-display">{{ projects.date }}</p>
         <div class="d-inline-flex project-content-box">
           <div class="list-group-item list-group-item-action">
-            {{ projects.name }}
-            <a>{{ counts[projects.name + ' ' + projects.date] }}</a>
+            <a v-bind:class="'numbers-of-doing-project-' + projects.id">{{ counts[projects.name + ' ' + projects.date] }}</a>
+            <span v-bind:class="'project-name-' + projects.name" @click="editName(projects.name, projects.id)">{{ projects.name }}</span>
             <button class="toggle-button" ref="toggle-button" @click="showChildProjects(projects.name,projects.date)">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" fill="currentColor"
                    class="bi bi-list-nested" viewBox="0 0 16 20">
@@ -45,7 +45,7 @@
             <div class="time-display">
               <p>{{ projectHours[key] }}:{{ projectMinutes[key] }}:{{ projectSeconds[key] }}</p>
             </div>
-              <button class="btn btn-danger btn-sm delete-button" @click="deleteProject(projects.id)">Delete</button>
+            <button class="btn btn-danger btn-sm delete-button" @click="deleteProject(projects.id)">Delete</button>
           </div>
         </div>
         <div v-bind:class="'list-group-item list-group-item-action child-data-project-' + projects.name"
@@ -198,6 +198,17 @@ export default {
     deleteProject: function (id) {
       axios.post('/app/project/delete', {projectId: id})
       window.location.reload();
+    },
+    editName: function (projectName, id) {
+      console.log(event.target.)
+      let firstPartName = projectName.split(' ');
+      let name = document.querySelector('.project-name-' + firstPartName[0])
+      let input = document.createElement('input');
+      input.id = 'project-name-editable';
+      input.value = name.innerHTML;
+      name.remove();
+      document.querySelector('.numbers-of-doing-project-' + id).appendChild(input);
+      // input.select();
     }
   }
 }
