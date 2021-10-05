@@ -20,22 +20,21 @@ class ProjectTimeController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    /**
-     * @Route("/app/project/time", name="project_time")
-     */
-    public function index(): Response
-    {
-        return $this->render('project_time/index.html.twig');
-    }
 
     /**
-     * @Route("/app/project/{id}/edit", name="project_time_edit")
      * @Route("/app/project/new", name="project_time_new")
      */
-    public function edit($id = null, Request $request, SerializerInterface $serializer): Response
+    public function new(Request $request, SerializerInterface $serializer): Response
     {
-        if ($id != null) {
-            $project = $this->entityManager->getRepository(Project::class)->find($id);
+        $content = json_decode($request->getContent());
+        if (isset($content->projectName) ) {
+            $projects = $this->entityManager->getRepository(Project::class)->findBy(['name' => $content->projectName]);
+            /** @var Project $project */
+            foreach ($projects as $project ){
+                $project->setName($content->newName);
+                $this->entityManager->persist($project);
+            }
+            $this->entityManager->flush();
         } else {
             $project = new Project();
         }
@@ -46,10 +45,8 @@ class ProjectTimeController extends AbstractController
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($id == null) {
                 $project->setUser($this->getUser());
                 $this->entityManager->persist($project);
-            }
             $this->entityManager->flush();
         }
 
@@ -58,6 +55,7 @@ class ProjectTimeController extends AbstractController
             'projectsTime' => $projectsTimeJson
         ]);
     }
+
 
     /**
      * @Route("/app/project/delete", name="project_time_delete", methods={"POST"})
