@@ -34,7 +34,7 @@
         <div class="d-inline-flex project-content-box">
           <div class="list-group-item list-group-item-action">
             <a v-bind:class="'numbers-of-doing-project-' + projects.id">{{ counts[projects.name + ' ' + projects.date] }}</a>
-            <span v-bind:class="'project-name-' + projects.name" @click="editName(projects.name, projects.id)">{{ projects.name }}</span>
+            <input  @change="editName(projects.name, projects.id)"   v-bind:class="'project-name-input project-name-' + projects.name" v-bind:value="projects.name" >
             <button class="toggle-button" ref="toggle-button" @click="showChildProjects(projects.name,projects.date)">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" fill="currentColor"
                    class="bi bi-list-nested" viewBox="0 0 16 20">
@@ -81,7 +81,6 @@ export default {
     this.$refs["pause-button"].style.display = 'none';
     this.$refs["stop-button"].style.display = 'none';
     this.$refs["reset-button"].style.display = 'none';
-
   },
   beforeMount() {
     this.counts = {};
@@ -199,17 +198,11 @@ export default {
       axios.post('/app/project/delete', {projectId: id})
       window.location.reload();
     },
-    editName: function (projectName, id) {
-      console.log(event.target.)
-      let firstPartName = projectName.split(' ');
-      let name = document.querySelector('.project-name-' + firstPartName[0])
-      let input = document.createElement('input');
-      input.id = 'project-name-editable';
-      input.value = name.innerHTML;
-      name.remove();
-      document.querySelector('.numbers-of-doing-project-' + id).appendChild(input);
-      // input.select();
-    }
+    editName: function (projectName) {
+      event.preventDefault();
+      console.log(event.target.value)
+      axios.post('/app/project/new', {projectName: projectName, newName: event.target.value})
+    },
   }
 }
 </script>
