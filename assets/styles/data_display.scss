@@ -49,10 +49,16 @@
 .time-display{
   float: right;
 }
-a{
+.box-number{
   text-decoration: none;
   color: black;
+  border: 3px solid gray;
+  padding: 5px
 }
 .project-name-input{
-  border: none !important;
+  border: none ;
+}
+.project-name-input:hover{
+  border: 3px solid gray;
+  padding: 5px;
 }
