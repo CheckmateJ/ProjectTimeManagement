@@ -33,9 +33,13 @@
         <p class="date-display">{{ projects.date }}</p>
         <div class="d-inline-flex project-content-box">
           <div class="list-group-item list-group-item-action">
-            <a v-bind:class="'numbers-of-doing-project-' + projects.id">{{ counts[projects.name + ' ' + projects.date] }}</a>
-            <input  @change="editName(projects.name, projects.id)"   v-bind:class="'project-name-input project-name-' + projects.name" v-bind:value="projects.name" >
-            <button class="toggle-button" ref="toggle-button" @click="showChildProjects(projects.name,projects.date)">
+            <a @click="showChildProjects(projects.name,projects.date)"
+               v-bind:class="'box-number numbers-of-doing-project-' + projects.id">{{
+                counts[projects.name + ' ' + projects.date]
+              }}</a>
+            <input @change="editName(projects.name, projects.id)"
+                   v-bind:class="'project-name-input project-name-' + projects.name" v-bind:value="projects.name">
+            <button class="toggle-button" ref="toggle-button">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" fill="currentColor"
                    class="bi bi-list-nested" viewBox="0 0 16 20">
                 <path fill-rule="evenodd"
@@ -49,7 +53,7 @@
           </div>
         </div>
         <div v-bind:class="'list-group-item list-group-item-action child-data-project-' + projects.name"
-             ref="child-data-project">
+             ref="child-data-project" style="display: none">
         </div>
       </div>
     </div>
@@ -62,10 +66,9 @@ export default {
   props: ['projectsTime'],
   data() {
     return {
-      test: 'test',
       hours: '00',
       minutes: '00',
-      seconds: '0',
+      seconds: '',
       timer: null,
       time: '',
       projectsData: [],
@@ -100,7 +103,6 @@ export default {
         let name = this.projectsTime[i].projectName.name
         this.projectsData.push({name: name, date: projectDate, id: this.projectsTime[i].id})
         j++
-
         let projectsTime = this.projectsTime;
         let seconds = 0;
         let minutes = 0;
@@ -151,9 +153,9 @@ export default {
             hours.innerHTML = this.hours + ":"
           }
           this.time = this.hours + ":" + this.minutes + ":" + this.seconds;
+          this.seconds++;
           this.seconds = this.seconds < 10 ? '0' + this.seconds : this.seconds;
           seconds.innerHTML = this.seconds;
-          this.seconds++;
 
         }, 1000)
       }
@@ -179,14 +181,21 @@ export default {
     },
     showChildProjects: function (name, date) {
       let firstPartName = name.split(' ');
-      let show = document.querySelector(`.child-data-project-` + firstPartName[0]) ? document.querySelector(`.child-data-project-` + firstPartName[0]).childElementCount > 0 : false
+      let childProject = document.querySelector('.child-data-project-' + firstPartName[0])
+      childProject.style.display = 'block';
+      let show = childProject ? childProject.childElementCount > 0 : false
       let projects = this.projectsTime.filter(project => project.projectName.name === name && project.createdAt.includes(date));
       if (show === false) {
         for (var project in projects) {
           let element = document.createElement('div');
-          element.className = 'child-project'
-          element.innerHTML = projects[project].projectName.name + ' ' + projects[project].timeOfProject[0]
-          document.querySelector(`.child-data-project-` + firstPartName[0]).appendChild(element)
+          let input = document.createElement('input');
+          element.className = 'child-project';
+          input.className = 'child-project-time';
+          element.innerHTML = projects[project].projectName.name
+          input.value = projects[project].timeOfProject[0]
+          input.addEventListener('change', this.editTime);
+          element.appendChild(input)
+          childProject.appendChild(element)
         }
       } else {
         document.querySelectorAll('.child-project').forEach(project => {
@@ -203,6 +212,10 @@ export default {
       console.log(event.target.value)
       axios.post('/app/project/new', {projectName: projectName, newName: event.target.value})
     },
+    editTime: function () {
+      console.log(event.target.value)
+      axios.post('/app/project/new', {projectName: projectName, newName: event.target.value})
+    }
   }
 }
 </script>
