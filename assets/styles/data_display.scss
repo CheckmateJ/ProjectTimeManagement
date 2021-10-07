@@ -53,12 +53,17 @@
   text-decoration: none;
   color: black;
   border: 3px solid gray;
-  padding: 5px
+  padding: 3px
 }
 .project-name-input{
   border: none ;
 }
 .project-name-input:hover{
   border: 3px solid gray;
+  padding: 3px;
+}
+.child-project-time{
+  margin-left: 10px;
+  width: 80px;
   padding: 5px;
 }

@@ -37,7 +37,7 @@
                v-bind:class="'box-number numbers-of-doing-project-' + projects.id">{{
                 counts[projects.name + ' ' + projects.date]
               }}</a>
-            <input @change="editName(projects.name, projects.id)"
+            <input @change="editName(projects.name, projects.date, $event)"
                    v-bind:class="'project-name-input project-name-' + projects.name" v-bind:value="projects.name">
             <button class="toggle-button" ref="toggle-button">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" fill="currentColor"
@@ -49,7 +49,7 @@
             <div class="time-display">
               <p>{{ projectHours[key] }}:{{ projectMinutes[key] }}:{{ projectSeconds[key] }}</p>
             </div>
-            <button class="btn btn-danger btn-sm delete-button" @click="deleteProject(projects.id)">Delete</button>
+            <button class="btn btn-danger btn-sm delete-button" @click="deleteProject(projects.name)">Delete</button>
           </div>
         </div>
         <div v-bind:class="'list-group-item list-group-item-action child-data-project-' + projects.name"
@@ -168,6 +168,7 @@ export default {
     stopTime: function () {
       //pass the time to the input
       this.$refs["time-of-project"].value = this.time
+      console.log(this.time)
       clearInterval(this.timer);
       this.resetTime()
     },
@@ -189,12 +190,19 @@ export default {
         for (var project in projects) {
           let element = document.createElement('div');
           let input = document.createElement('input');
+          let button = document.createElement('button');
+
           element.className = 'child-project';
           input.className = 'child-project-time';
           element.innerHTML = projects[project].projectName.name
+          button.innerText = 'Delete'
           input.value = projects[project].timeOfProject[0]
+          input.dataset.id = projects[project].id
+          button.dataset.id = projects[project].id
           input.addEventListener('change', this.editTime);
+          button.addEventListener('click', this.deleteProject);
           element.appendChild(input)
+          element.appendChild(button)
           childProject.appendChild(element)
         }
       } else {
@@ -203,18 +211,19 @@ export default {
         })
       }
     },
-    deleteProject: function (id) {
-      axios.post('/app/project/delete', {projectId: id})
-      window.location.reload();
+    deleteProject: function (projectsName) {
+      // console.log(typeof event.target.dataset.id !=='undefined', event.target.dataset.id);
+      // id = typeof event.target.dataset.id !=='undefined' ? event.target.dataset.id : id
+      // console.log(id)
+      axios.post('/app/project/delete', {projectName: projectsName})
+      // window.location.reload();
     },
-    editName: function (projectName) {
+    editName: function (projectName,projectDate, event) {
       event.preventDefault();
-      console.log(event.target.value)
-      axios.post('/app/project/new', {projectName: projectName, newName: event.target.value})
+      axios.post('/app/project/new', {projectName: projectName, projectDate: projectDate , newName: event.target.value})
     },
-    editTime: function () {
-      console.log(event.target.value)
-      axios.post('/app/project/new', {projectName: projectName, newName: event.target.value})
+    editTime: function (event) {
+      axios.post('/app/project/new', {projectId: event.target.dataset.id, newTime: event.target.value})
     }
   }
 }
