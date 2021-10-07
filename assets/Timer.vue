@@ -37,7 +37,7 @@
                v-bind:class="'box-number numbers-of-doing-project-' + projects.id">{{
                 counts[projects.name + ' ' + projects.date]
               }}</a>
-            <input @change="editName(projects.name, projects.id)"
+            <input @change="editName(projects.name, $event)"
                    v-bind:class="'project-name-input project-name-' + projects.name" v-bind:value="projects.name">
             <button class="toggle-button" ref="toggle-button">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" fill="currentColor"
@@ -208,11 +208,11 @@ export default {
       axios.post('/app/project/delete', {projectId: id})
       window.location.reload();
     },
-    editName: function (projectName) {
+    editName: function (projectName, event) {
       event.preventDefault();
       axios.post('/app/project/new', {projectName: projectName, newName: event.target.value})
     },
-    editTime: function () {
+    editTime: function (event) {
       axios.post('/app/project/new', {projectId: event.target.dataset.id, newTime: event.target.value})
     }
   }
