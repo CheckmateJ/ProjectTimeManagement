@@ -32,8 +32,12 @@ class ProjectTimeController extends AbstractController
             $projects = $this->entityManager->getRepository(Project::class)->findBy(['name' => $content->projectName]);
             /** @var Project $project */
             foreach ($projects as $project) {
-                $project->setName($content->newName);
-                $this->entityManager->persist($project);
+                $date = $project->getCreatedAt();
+                $dateFormat = $date->format('Y-m-d');
+                if($dateFormat === $content->projectDate){
+                    $project->setName($content->newName);
+                    $this->entityManager->persist($project);
+                }
             }
             $this->entityManager->flush();
         } else if (isset($content->projectId)) {
@@ -69,7 +73,9 @@ class ProjectTimeController extends AbstractController
     public function delete(Request $request): Response
     {
         $content = json_decode($request->getContent());
-        $projectTime = $this->entityManager->getRepository(ProjectTime::class)->find($content->projectId);
+
+        $projects = $this->entityManager->getRepository(Project::class)->findBy(['name' => $content->projectName]);
+        dd($projects);
 
         $this->entityManager->remove($projectTime);
         $this->entityManager->flush();
