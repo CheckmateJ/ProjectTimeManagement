@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+
 use App\Entity\Project;
 use App\Entity\ProjectTime;
 use App\Form\ProjectType;
@@ -27,26 +28,31 @@ class ProjectTimeController extends AbstractController
     public function new(Request $request, SerializerInterface $serializer): Response
     {
         $content = json_decode($request->getContent());
-        if (isset($content->projectName) ) {
+        if (isset($content->projectName)) {
             $projects = $this->entityManager->getRepository(Project::class)->findBy(['name' => $content->projectName]);
             /** @var Project $project */
-            foreach ($projects as $project ){
+            foreach ($projects as $project) {
                 $project->setName($content->newName);
                 $this->entityManager->persist($project);
             }
             $this->entityManager->flush();
-        } else {
-            $project = new Project();
+        } else if (isset($content->projectId)) {
+            $projectTime = $this->entityManager->getRepository(ProjectTime::class)->find($content->projectId);
+            /** @var ProjectTime $projectTime */
+            $projectTime->setTimeOfProject([$content->newTime]);
+            $this->entityManager->persist($projectTime);
+            $this->entityManager->flush();
         }
 
+        $project = new Project();
         $projectsTime = $this->entityManager->getRepository(ProjectTime::class)->findAll();
         $projectsTimeJson = $serializer->serialize($projectsTime, 'json', ['groups' => 'show_project']);
 
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-                $project->setUser($this->getUser());
-                $this->entityManager->persist($project);
+            $project->setUser($this->getUser());
+            $this->entityManager->persist($project);
             $this->entityManager->flush();
         }
 
@@ -63,7 +69,7 @@ class ProjectTimeController extends AbstractController
     public function delete(Request $request): Response
     {
         $content = json_decode($request->getContent());
-        $projectTime =  $this->entityManager->getRepository(ProjectTime::class)->find($content->projectId);
+        $projectTime = $this->entityManager->getRepository(ProjectTime::class)->find($content->projectId);
 
         $this->entityManager->remove($projectTime);
         $this->entityManager->flush();

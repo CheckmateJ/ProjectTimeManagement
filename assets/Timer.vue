@@ -193,6 +193,7 @@ export default {
           input.className = 'child-project-time';
           element.innerHTML = projects[project].projectName.name
           input.value = projects[project].timeOfProject[0]
+          input.dataset.id = projects[project].id
           input.addEventListener('change', this.editTime);
           element.appendChild(input)
           childProject.appendChild(element)
@@ -209,12 +210,10 @@ export default {
     },
     editName: function (projectName) {
       event.preventDefault();
-      console.log(event.target.value)
       axios.post('/app/project/new', {projectName: projectName, newName: event.target.value})
     },
     editTime: function () {
-      console.log(event.target.value)
-      axios.post('/app/project/new', {projectName: projectName, newName: event.target.value})
+      axios.post('/app/project/new', {projectId: event.target.dataset.id, newTime: event.target.value})
     }
   }
 }
