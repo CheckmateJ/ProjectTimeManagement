@@ -52,7 +52,7 @@
             <button class="btn btn-danger btn-sm delete-button" @click="deleteProject(projects.name, projects.date)">Delete</button>
           </div>
         </div>
-        <div v-bind:class="'list-group-item list-group-item-action child-data-project-' + projects.name"
+        <div v-bind:class="'list-group-item list-group-item-action child-data-project-' + projects.date"
              ref="child-data-project" style="display: none">
         </div>
       </div>
@@ -180,8 +180,7 @@ export default {
 
     },
     showChildProjects: function (name, date) {
-      let firstPartName = name.split(' ');
-      let childProject = document.querySelector('.child-data-project-' + firstPartName[0])
+      let childProject = document.querySelector('.child-data-project-' + date)
       childProject.style.display = 'block';
       let show = childProject ? childProject.childElementCount > 0 : false
       let projects = this.projectsTime.filter(project => project.projectName.name === name && project.createdAt.includes(date));
