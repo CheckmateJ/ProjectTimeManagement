@@ -33,7 +33,7 @@
         <p class="date-display">{{ projects.date }}</p>
         <div class="d-inline-flex project-content-box">
           <div class="list-group-item list-group-item-action">
-            <a @click="showChildProjects(projects.name,projects.date)"
+            <a @click="showChildProjects(projects.name,projects.date, projects.id)"
                v-bind:class="'box-number numbers-of-doing-project-' + projects.id">{{
                 counts[projects.name + ' ' + projects.date]
               }}</a>
@@ -49,11 +49,14 @@
             <div class="time-display">
               <p>{{ projectHours[key] }}:{{ projectMinutes[key] }}:{{ projectSeconds[key] }}</p>
             </div>
-            <button class="btn btn-danger btn-sm delete-button" @click="deleteProject(projects.name, projects.date)">Delete</button>
+            <button class="btn btn-danger btn-sm delete-button" @click="deleteProject(projects.name, projects.date)">
+              Delete
+            </button>
           </div>
         </div>
-        <div v-bind:class="'list-group-item list-group-item-action child-data-project-' + projects.date"
-             ref="child-data-project" style="display: none">
+        <div
+            v-bind:class="'list-group-item list-group-item-action child-data-project-' + projects.date + '-' + projects.id "
+            ref="child-data-project" style="display: none">
         </div>
       </div>
     </div>
@@ -87,21 +90,25 @@ export default {
   },
   beforeMount() {
     let j = -1;
+    let projectsName = [];
 
     this.projectsTime.forEach(project => {
       let lastCharInDate = project.createdAt.indexOf('T');
       let projectDate = project.createdAt.slice(0, lastCharInDate);
       this.counts[project.projectName.name + ' ' + projectDate] = (this.counts[project.projectName.name + ' ' + projectDate] || 0) + 1;
     });
+
+
     for (let i = this.projectsTime.length - 1; i >= 0; i--) {
       let lastCharInDate = this.projectsTime[i].createdAt.indexOf('T');
       let projectDate = this.projectsTime[i].createdAt.slice(0, lastCharInDate);
 
       this.todayDate = new Date().getUTCFullYear() + '-' + (new Date().getUTCMonth() + 1 < 10 ? '0' + (new Date().getUTCMonth() + 1) : new Date().getUTCMonth() + 1) + '-' + new Date().getUTCDate();
-      if (typeof this.projectsData[j] == 'undefined' || this.projectsData[j].date !== projectDate || this.projectsData[j].name !== this.projectsTime[i].projectName.name) {
+
+      if (typeof this.projectsData[j] == 'undefined' || this.projectsData[j].date !== projectDate || !projectsName.includes(this.projectsTime[i].projectName.name)) {
         let name = this.projectsTime[i].projectName.name
-        console.log( this.projectsTime[i].projectName.name);
         this.projectsData.push({name: name, date: projectDate, id: this.projectsTime[i].id})
+        projectsName.push(name);
         j++
         let projectsTime = this.projectsTime;
         let seconds = 0;
@@ -179,8 +186,8 @@ export default {
       this.$refs.hours.innerHTML = '00:';
 
     },
-    showChildProjects: function (name, date) {
-      let childProject = document.querySelector('.child-data-project-' + date)
+    showChildProjects: function (name, date, id) {
+      let childProject = document.querySelector('.child-data-project-' + date + '-' + id)
       childProject.style.display = 'block';
       let show = childProject ? childProject.childElementCount > 0 : false
       let projects = this.projectsTime.filter(project => project.projectName.name === name && project.createdAt.includes(date));
@@ -211,12 +218,16 @@ export default {
       }
     },
     deleteProject: function (projectsName, projectDate) {
-      axios.post('/app/project/delete', {projectName: projectsName, projectDate: projectDate, projectId: event.target.dataset.id}).then(response => console.log(response))
+      axios.post('/app/project/delete', {
+        projectName: projectsName,
+        projectDate: projectDate,
+        projectId: event.target.dataset.id
+      }).then(response => console.log(response))
       window.location.reload();
     },
-    editName: function (projectName,projectDate, event) {
+    editName: function (projectName, projectDate, event) {
       event.preventDefault();
-      axios.post('/app/project/new', {projectName: projectName, projectDate: projectDate , newName: event.target.value})
+      axios.post('/app/project/new', {projectName: projectName, projectDate: projectDate, newName: event.target.value})
     },
     editTime: function (event) {
       axios.post('/app/project/new', {projectId: event.target.dataset.id, newTime: event.target.value})
