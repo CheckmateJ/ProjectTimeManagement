@@ -49,7 +49,7 @@
             <div class="time-display">
               <p>{{ projectHours[key] }}:{{ projectMinutes[key] }}:{{ projectSeconds[key] }}</p>
             </div>
-            <button class="btn btn-danger btn-sm delete-button" @click="deleteProject(projects.name)">Delete</button>
+            <button class="btn btn-danger btn-sm delete-button" @click="deleteProject(projects.name, projects.date)">Delete</button>
           </div>
         </div>
         <div v-bind:class="'list-group-item list-group-item-action child-data-project-' + projects.name"
@@ -86,7 +86,6 @@ export default {
     this.$refs["reset-button"].style.display = 'none';
   },
   beforeMount() {
-    this.counts = {};
     let j = -1;
 
     this.projectsTime.forEach(project => {
@@ -101,6 +100,7 @@ export default {
       this.todayDate = new Date().getUTCFullYear() + '-' + (new Date().getUTCMonth() + 1 < 10 ? '0' + (new Date().getUTCMonth() + 1) : new Date().getUTCMonth() + 1) + '-' + new Date().getUTCDate();
       if (typeof this.projectsData[j] == 'undefined' || this.projectsData[j].date !== projectDate || this.projectsData[j].name !== this.projectsTime[i].projectName.name) {
         let name = this.projectsTime[i].projectName.name
+        console.log( this.projectsTime[i].projectName.name);
         this.projectsData.push({name: name, date: projectDate, id: this.projectsTime[i].id})
         j++
         let projectsTime = this.projectsTime;
@@ -156,7 +156,6 @@ export default {
           this.seconds++;
           this.seconds = this.seconds < 10 ? '0' + this.seconds : this.seconds;
           seconds.innerHTML = this.seconds;
-
         }, 1000)
       }
     },
@@ -168,7 +167,6 @@ export default {
     stopTime: function () {
       //pass the time to the input
       this.$refs["time-of-project"].value = this.time
-      console.log(this.time)
       clearInterval(this.timer);
       this.resetTime()
     },
@@ -179,6 +177,7 @@ export default {
       this.$refs.seconds.innerHTML = '00';
       this.$refs.minutes.innerHTML = '00:';
       this.$refs.hours.innerHTML = '00:';
+
     },
     showChildProjects: function (name, date) {
       let firstPartName = name.split(' ');
@@ -209,14 +208,12 @@ export default {
         document.querySelectorAll('.child-project').forEach(project => {
           project.remove();
         })
+        childProject.style.display = 'none';
       }
     },
-    deleteProject: function (projectsName) {
-      // console.log(typeof event.target.dataset.id !=='undefined', event.target.dataset.id);
-      // id = typeof event.target.dataset.id !=='undefined' ? event.target.dataset.id : id
-      // console.log(id)
-      axios.post('/app/project/delete', {projectName: projectsName})
-      // window.location.reload();
+    deleteProject: function (projectsName, projectDate) {
+      axios.post('/app/project/delete', {projectName: projectsName, projectDate: projectDate, projectId: event.target.dataset.id}).then(response => console.log(response))
+      window.location.reload();
     },
     editName: function (projectName,projectDate, event) {
       event.preventDefault();
