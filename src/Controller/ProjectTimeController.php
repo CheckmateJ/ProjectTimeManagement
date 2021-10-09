@@ -27,6 +27,7 @@ class ProjectTimeController extends AbstractController
      */
     public function new(Request $request, SerializerInterface $serializer): Response
     {
+
         $content = json_decode($request->getContent());
         if (isset($content->projectName)) {
             $projects = $this->entityManager->getRepository(Project::class)->findBy(['name' => $content->projectName]);
@@ -34,7 +35,7 @@ class ProjectTimeController extends AbstractController
             foreach ($projects as $project) {
                 $date = $project->getCreatedAt();
                 $dateFormat = $date->format('Y-m-d');
-                if($dateFormat === $content->projectDate){
+                if ($dateFormat === $content->projectDate) {
                     $project->setName($content->newName);
                     $this->entityManager->persist($project);
                 }
@@ -49,8 +50,10 @@ class ProjectTimeController extends AbstractController
         }
 
         $project = new Project();
+
         $projectsTime = $this->entityManager->getRepository(ProjectTime::class)->findAll();
         $projectsTimeJson = $serializer->serialize($projectsTime, 'json', ['groups' => 'show_project']);
+
 
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
@@ -58,6 +61,7 @@ class ProjectTimeController extends AbstractController
             $project->setUser($this->getUser());
             $this->entityManager->persist($project);
             $this->entityManager->flush();
+            return $this->redirectToRoute('project_time_new');
         }
 
         return $this->render('project_time/form.html.twig', [
@@ -73,12 +77,23 @@ class ProjectTimeController extends AbstractController
     public function delete(Request $request): Response
     {
         $content = json_decode($request->getContent());
-
-        $projects = $this->entityManager->getRepository(Project::class)->findBy(['name' => $content->projectName]);
-        dd($projects);
-
-        $this->entityManager->remove($projectTime);
+        if (isset($content->projectId)) {
+            $projectTime = $this->entityManager->getRepository(ProjectTime::class)->find($content->projectId);
+            $project = $this->entityManager->getRepository(Project::class)->find($projectTime->getProjectName());
+            $this->entityManager->remove($projectTime);
+            $this->entityManager->remove($project);
+        } else {
+            $projects = $this->entityManager->getRepository(Project::class)->findBy(['name' => $content->projectName]);
+            foreach ($projects as $project) {
+                $date = $project->getCreatedAt();
+                $dateFormat = $date->format('Y-m-d');
+                if ($dateFormat === $content->projectDate) {
+                    $projectTime = $this->entityManager->getRepository(ProjectTime::class)->findBy(['projectName' => $project->getId()]);
+                    $this->entityManager->remove($projectTime[0]);
+                    $this->entityManager->remove($project);
+                }
+            }
+        }
         $this->entityManager->flush();
     }
-
 }
