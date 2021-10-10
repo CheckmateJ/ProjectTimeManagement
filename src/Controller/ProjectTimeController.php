@@ -21,6 +21,13 @@ class ProjectTimeController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * @Route("/", name="index")
+     */
+    public function index(): Response
+    {
+        return $this->render('project_time/index.html.twig');
+    }
 
     /**
      * @Route("/app/project/new", name="project_time_new")
