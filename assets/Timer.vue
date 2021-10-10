@@ -40,18 +40,22 @@
             <input @change="editName(projects.name, projects.date, $event)"
                    v-bind:class="'project-name-input project-name-' + projects.name" v-bind:value="projects.name">
             <button class="toggle-button" ref="toggle-button">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" fill="currentColor"
-                   class="bi bi-list-nested" viewBox="0 0 16 20">
-                <path fill-rule="evenodd"
-                      d="M4.5 11.5A.5.5 0 0 1 5 11h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 1 3h10a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5z"/>
-              </svg>
+              <div class="dropdown">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" fill="currentColor"
+                     class="bi bi-list-nested dropdown-toggle" id="dropdownMenuButton1" viewBox="0 0 16 20"
+                     data-bs-toggle="dropdown" aria-expanded="false">
+                  <path fill-rule="evenodd"
+                        d="M4.5 11.5A.5.5 0 0 1 5 11h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 1 3h10a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li class="text-center "><a class="text-decoration-none delete-button"
+                                              @click="deleteProject(projects.name, projects.date)">Delete</a></li>
+                </ul>
+              </div>
             </button>
             <div class="time-display">
               <p>{{ projectHours[key] }}:{{ projectMinutes[key] }}:{{ projectSeconds[key] }}</p>
             </div>
-            <button class="btn btn-danger btn-sm delete-button" @click="deleteProject(projects.name, projects.date)">
-              Delete
-            </button>
           </div>
         </div>
         <div
@@ -231,7 +235,8 @@ export default {
     },
     editTime: function (event) {
       axios.post('/app/project/new', {projectId: event.target.dataset.id, newTime: event.target.value})
-    }
+    },
+
   }
 }
 </script>
