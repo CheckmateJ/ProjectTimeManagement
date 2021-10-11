@@ -137,7 +137,6 @@ export default {
             minutes = minutes - 59
           }
         }
-
         this.projectSeconds.push(seconds < 10 ? '0' + seconds : seconds);
         this.projectMinutes.push(minutes < 10 ? '0' + minutes : minutes);
         this.projectHours.push(hours < 10 ? '0' + hours : hours);
