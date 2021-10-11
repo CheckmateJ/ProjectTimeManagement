@@ -2,7 +2,8 @@
   <div class="container">
     <div class="d-inline-flex  justify-content-center timer-box">
       <form name="project_time" method="post" class="d-inline-flex">
-        <div class="me-3"><input v-on:keyup.enter="startTime" id="project_name" name="project[name]" required="required"
+        <div class="me-3"><input  @input="checkInput" v-on:keyup.enter="startTime" ref="input-name"
+                                 id="project_name" name="project[name]" required="required"
                                  class="input-group-text form-control project-name-input "
                                  placeholder="project name"></div>
         <div class="time-hours" ref="hours">00:</div>
@@ -12,7 +13,9 @@
           <input style="display: none" name="project[projectReports][1][timeOfProject]" ref="time-of-project"
                  required="required">
           <div>
-            <a class="btn  me-2 btn-start" @click="startTime" ref="start-button">Start</a>
+            <button class="btn  me-2 btn-start" @click="startTime" id="start-count" ref="start-button" disabled="false">
+              Start
+            </button>
           </div>
           <div>
             <a class="btn btn-dark me-2" type="submit" ref="pause-button" @click="pauseTime">Pause</a>
@@ -75,9 +78,9 @@ export default {
     return {
       hours: '00',
       minutes: '00',
-      seconds: '',
+      seconds: '00',
       timer: null,
-      time: '',
+      time: '00:00:00',
       projectsData: [],
       projectDate: '',
       todayDate: '',
@@ -91,6 +94,7 @@ export default {
     this.$refs["pause-button"].style.display = 'none';
     this.$refs["stop-button"].style.display = 'none';
     this.$refs["reset-button"].style.display = 'none';
+
   },
   beforeMount() {
     let j = -1;
@@ -141,6 +145,9 @@ export default {
     }
   },
   methods: {
+    checkInput: function () {
+      this.$refs["input-name"].value === '' ? this.$refs["start-button"].disabled = true : this.$refs["start-button"].disabled = false
+    },
     startTime: function () {
       this.$refs["start-button"].style.display = 'none';
       this.$refs["pause-button"].style.display = 'inline-flex';
